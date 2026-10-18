@@ -96,7 +96,7 @@ Supply `--degree D` to choose a degree from 1 through 64. If it is omitted, the 
 
 ## Commands
 
-`show [--degree D] P` displays the canonical permutation, its degree, one-line images, order, sign, cycle type, and inverse.
+`show [--degree D] P` displays the canonical permutation, its degree, one-line images, order, sign, cycle type, and inverse. A single `-` in place of `P` reads the permutation from standard input; a second permutation there is `too many arguments`.
 
 `mul [--degree D] P Q...` multiplies two to eight permutations from left to right and reports the product, its degree, order, and sign.
 

@@ -15,7 +15,13 @@ public static class ShowCommand
             throw new CayleyException("too many arguments");
         }
 
-        var (perms, degree) = Notation.ParseAll(parsed.Args, parsed.Values["--degree"]);
+        var words = Words.Of(io, parsed.Args);
+        if (words.Count > 1)
+        {
+            throw new CayleyException("too many arguments");
+        }
+
+        var (perms, degree) = Notation.ParseAll(words, parsed.Values["--degree"]);
         var perm = perms[0];
         var inverse = perm.Inverse();
         var invariant = System.Globalization.CultureInfo.InvariantCulture;
