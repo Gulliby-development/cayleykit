@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Cayleykit/Cayleykit.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Cayleykit.Tests/Cayleykit.Tests.csproj" />
+  </Folder>
+</Solution>
