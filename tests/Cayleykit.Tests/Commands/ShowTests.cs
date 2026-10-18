@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 
 namespace Cayleykit.Tests;
 
@@ -219,11 +220,69 @@ public class ShowTests
     }
 
     [Fact]
-    public void Show_treats_dash_as_an_operand_without_reading_stdin()
+    public void Show_reads_a_BOM_prefixed_CRLF_permutation_from_stdin()
     {
-        AssertFailure(
-            "invalid permutation \"-\" (expected cycles such as (1,2,3)(4,5), or ())",
-            "-");
+        var stdin = new byte[] { 0xEF, 0xBB, 0xBF }
+            .Concat(Encoding.UTF8.GetBytes("(1,2,3)(4,5)\r\n"))
+            .ToArray();
+        var io = new FakeIo(stdin);
+
+        var result = ShowCommand.Run(["-"], io);
+
+        Assert.Equal(0, result);
+        Assert.Equal(
+            new[]
+            {
+                "perm        (1,2,3)(4,5)\n" +
+                "degree      5\n" +
+                "image       2 3 1 5 4\n" +
+                "order       6\n" +
+                "sign        odd\n" +
+                "type        3 2\n" +
+                "inverse     (1,3,2)(4,5)\n"
+            },
+            io.Output);
+        Assert.Empty(io.Errors);
+        Assert.Equal(1, io.ReadCount);
+    }
+
+    [Fact]
+    public void Show_rejects_multiple_permutations_from_stdin()
+    {
+        var io = new FakeIo(Encoding.UTF8.GetBytes("(1,2) (3,4)"));
+
+        var exception = Assert.Throws<CayleyException>(() => ShowCommand.Run(["-"], io));
+
+        Assert.Equal("too many arguments", exception.Message);
+        Assert.Empty(io.Output);
+        Assert.Empty(io.Errors);
+        Assert.Equal(1, io.ReadCount);
+    }
+
+    [Fact]
+    public void Show_reports_empty_stdin()
+    {
+        var io = new FakeIo([]);
+
+        var exception = Assert.Throws<CayleyException>(() => ShowCommand.Run(["-"], io));
+
+        Assert.Equal("<stdin>: no input", exception.Message);
+        Assert.Empty(io.Output);
+        Assert.Empty(io.Errors);
+        Assert.Equal(1, io.ReadCount);
+    }
+
+    [Fact]
+    public void Show_checks_too_many_arguments_before_reading_stdin()
+    {
+        var io = new FakeIo(Encoding.UTF8.GetBytes("()"));
+
+        var exception = Assert.Throws<CayleyException>(() => ShowCommand.Run(["-", "()"], io));
+
+        Assert.Equal("too many arguments", exception.Message);
+        Assert.Empty(io.Output);
+        Assert.Empty(io.Errors);
+        Assert.Equal(0, io.ReadCount);
     }
 
     private static void AssertSuccess(string[] args, string expectedOutput)
@@ -250,7 +309,7 @@ public class ShowTests
         Assert.Equal(0, io.ReadCount);
     }
 
-    private sealed class FakeIo : IIo
+    private sealed class FakeIo(byte[]? stdin = null) : IIo
     {
         public List<string> Output { get; } = [];
 
@@ -261,7 +320,7 @@ public class ShowTests
         public byte[] ReadStdin()
         {
             ReadCount++;
-            return [];
+            return stdin ?? [];
         }
 
         public void Out(string text) => Output.Add(text);
