@@ -17,7 +17,8 @@ public class UnitTest1
             "       cayleykit order [--degree D] G...\n" +
             "       cayleykit word [--degree D] P G...\n" +
             "       cayleykit elements [--degree D] G...\n" +
-            "       cayleykit classes [--degree D] G...";
+            "       cayleykit classes [--degree D] G...\n" +
+            "       cayleykit centralizer [--degree D] P";
 
         Assert.Equal(expectedUsage, Cli.Usage);
         AssertCli(["--help"], 0, expectedUsage + "\n", "");
@@ -130,7 +131,7 @@ public class UnitTest1
             [],
             2,
             "",
-            "cayleykit: missing command (show, mul, pow, conj, orbits, order, word, elements or classes)\n");
+            "cayleykit: missing command (show, mul, pow, conj, orbits, order, word, elements, classes or centralizer)\n");
     }
 
     [Fact]

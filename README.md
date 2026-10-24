@@ -36,6 +36,7 @@ usage: cayleykit show [--degree D] P
        cayleykit word [--degree D] P G...
        cayleykit elements [--degree D] G...
        cayleykit classes [--degree D] G...
+       cayleykit centralizer [--degree D] P
 ```
 
 Here `P` and `Q` are permutations, `K` is an integer exponent, and `G...` is a list of generators. Group commands accept one to eight generators. For those commands, a single `-` reads generator permutations from standard input, separated by whitespace.
@@ -114,6 +115,17 @@ Supply `--degree D` to choose a degree from 1 through 64. If it is omitted, the 
 
 `classes [--degree D] G...` lists the conjugacy classes, their sizes, representative orders and cycle types, and reports the center size and whether the group is abelian. The group may have at most 720 elements.
 
+`centralizer [--degree D] P` reports the permutation's cycle type and, in the symmetric group of the chosen degree, the order of its centralizer (`commute`) and the size of its conjugacy class (`class`). Fixed points count as cycles of length 1. The centralizer order is the product, over the cycle lengths k, of k to the power m times m factorial, where m is the number of cycles of length k; the class size is the degree factorial divided by it.
+
+```console
+$ cayleykit centralizer --degree 7 "(1,2,3)(4,5)"
+perm        (1,2,3)(4,5)
+degree      7
+type        3 2 1 1
+commute     12
+class       420
+```
+
 ## Exit codes
 
 Exit code 0 means the command succeeded. Exit code 1 is used only by `word` when the requested permutation is not in the generated group. Exit code 2 indicates a command-line or input error, including invalid notation or an operation that exceeds its documented size limit.
@@ -144,6 +156,7 @@ Exit code 0 means the command succeeded. Exit code 1 is used only by `word` when
 - `src/Cayleykit/Commands/WordCommand.cs` - Implements shortest-word reporting.
 - `src/Cayleykit/Commands/ElementsCommand.cs` - Implements generated-element listing.
 - `src/Cayleykit/Commands/ClassesCommand.cs` - Implements conjugacy-class reporting.
+- `src/Cayleykit/Commands/CentralizerCommand.cs` - Implements centralizer and class-size reporting.
 - `src/Cayleykit/Cli.cs` - Defines the command usage and dispatcher.
 - `src/Cayleykit/Program.cs` - Connects the command-line process to the I/O adapter.
 
@@ -170,6 +183,7 @@ Exit code 0 means the command succeeded. Exit code 1 is used only by `word` when
 - `tests/Cayleykit.Tests/Commands/WordTests.cs` - Tests the word command.
 - `tests/Cayleykit.Tests/Commands/ElementsTests.cs` - Tests the elements command.
 - `tests/Cayleykit.Tests/Commands/ClassesCommandTests.cs` - Tests the classes command.
+- `tests/Cayleykit.Tests/Commands/CentralizerTests.cs` - Tests the centralizer command.
 - `tests/Cayleykit.Tests/UnitTest1.cs` - Tests CLI dispatch and malformed standard input.
 - `tests/Cayleykit.Tests/DocsTests.cs` - Tests README examples and the project inventory.
 
