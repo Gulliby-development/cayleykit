@@ -31,6 +31,7 @@ public class DocsTests
         "src/Cayleykit/Commands/WordCommand.cs",
         "src/Cayleykit/Commands/ElementsCommand.cs",
         "src/Cayleykit/Commands/ClassesCommand.cs",
+        "src/Cayleykit/Commands/CentralizerCommand.cs",
         "src/Cayleykit/Cli.cs",
         "src/Cayleykit/Program.cs"
     ];
@@ -58,6 +59,7 @@ public class DocsTests
         "tests/Cayleykit.Tests/Commands/WordTests.cs",
         "tests/Cayleykit.Tests/Commands/ElementsTests.cs",
         "tests/Cayleykit.Tests/Commands/ClassesCommandTests.cs",
+        "tests/Cayleykit.Tests/Commands/CentralizerTests.cs",
         "tests/Cayleykit.Tests/UnitTest1.cs",
         "tests/Cayleykit.Tests/DocsTests.cs"
     ];
@@ -205,13 +207,13 @@ public class DocsTests
 
         var sourceEntries = ParseLayoutEntries(layoutLines[(sourceHeader + 1)..testsHeader]);
         var testEntries = ParseLayoutEntries(layoutLines[(testsHeader + 1)..]);
-        Assert.Equal(24, sourceEntries.Count);
-        Assert.Equal(23, testEntries.Count);
+        Assert.Equal(25, sourceEntries.Count);
+        Assert.Equal(24, testEntries.Count);
         Assert.Equal(ExpectedSourcePaths, sourceEntries.Select(entry => entry.Path));
         Assert.Equal(ExpectedTestPaths, testEntries.Select(entry => entry.Path));
 
         var entries = sourceEntries.Concat(testEntries).ToArray();
-        Assert.Equal(47, entries.Length);
+        Assert.Equal(49, entries.Length);
         Assert.Equal(entries.Length, entries.Select(entry => entry.Path).Distinct(StringComparer.Ordinal).Count());
 
         foreach (var entry in entries)
