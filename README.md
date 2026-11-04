@@ -37,6 +37,7 @@ usage: cayleykit show [--degree D] P
        cayleykit elements [--degree D] G...
        cayleykit classes [--degree D] G...
        cayleykit centralizer [--degree D] P
+       cayleykit abelian [--degree D] G...
 ```
 
 Here `P` and `Q` are permutations, `K` is an integer exponent, and `G...` is a list of generators. Group commands accept one to eight generators. For those commands, a single `-` reads generator permutations from standard input, separated by whitespace.
@@ -126,6 +127,17 @@ commute     12
 class       420
 ```
 
+`abelian [--degree D] G...` tells whether the generated group is abelian. A group is abelian exactly when its generators commute in pairs, so the command never builds the group. It reports `degree`, `gens` (the number of generators) and `abelian` (`yes` or `no`). When the answer is `no`, it adds `witness`, the first pair of generators in generator order that does not commute (the pairs are tried as g1 g2, g1 g3, ... g2 g3, ...), and `comm`, the commutator of that pair. Group commands accept one to eight generators, as above.
+
+```console
+$ cayleykit abelian "(1,2)" "(1,3)"
+degree      3
+gens        2
+abelian     no
+witness     g1 g2
+comm        (1,3,2)
+```
+
 ## Exit codes
 
 Exit code 0 means the command succeeded. Exit code 1 is used only by `word` when the requested permutation is not in the generated group. Exit code 2 indicates a command-line or input error, including invalid notation or an operation that exceeds its documented size limit.
@@ -157,6 +169,7 @@ Exit code 0 means the command succeeded. Exit code 1 is used only by `word` when
 - `src/Cayleykit/Commands/ElementsCommand.cs` - Implements generated-element listing.
 - `src/Cayleykit/Commands/ClassesCommand.cs` - Implements conjugacy-class reporting.
 - `src/Cayleykit/Commands/CentralizerCommand.cs` - Implements centralizer and class-size reporting.
+- `src/Cayleykit/Commands/AbelianCommand.cs` - Implements the abelian test of a generated group.
 - `src/Cayleykit/Cli.cs` - Defines the command usage and dispatcher.
 - `src/Cayleykit/Program.cs` - Connects the command-line process to the I/O adapter.
 
@@ -184,6 +197,7 @@ Exit code 0 means the command succeeded. Exit code 1 is used only by `word` when
 - `tests/Cayleykit.Tests/Commands/ElementsTests.cs` - Tests the elements command.
 - `tests/Cayleykit.Tests/Commands/ClassesCommandTests.cs` - Tests the classes command.
 - `tests/Cayleykit.Tests/Commands/CentralizerTests.cs` - Tests the centralizer command.
+- `tests/Cayleykit.Tests/Commands/AbelianTests.cs` - Tests the abelian command.
 - `tests/Cayleykit.Tests/UnitTest1.cs` - Tests CLI dispatch and malformed standard input.
 - `tests/Cayleykit.Tests/DocsTests.cs` - Tests README examples and the project inventory.
 
