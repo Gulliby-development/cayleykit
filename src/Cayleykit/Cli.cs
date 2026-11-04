@@ -12,7 +12,8 @@ public static class Cli
         "       cayleykit word [--degree D] P G...\n" +
         "       cayleykit elements [--degree D] G...\n" +
         "       cayleykit classes [--degree D] G...\n" +
-        "       cayleykit centralizer [--degree D] P";
+        "       cayleykit centralizer [--degree D] P\n" +
+        "       cayleykit abelian [--degree D] G...";
 
     private static readonly Dictionary<string, Func<IReadOnlyList<string>, IIo, int>> Commands =
         new(StringComparer.Ordinal)
@@ -26,7 +27,8 @@ public static class Cli
             ["word"] = WordCommand.Run,
             ["elements"] = ElementsCommand.Run,
             ["classes"] = ClassesCommand.Run,
-            ["centralizer"] = CentralizerCommand.Run
+            ["centralizer"] = CentralizerCommand.Run,
+            ["abelian"] = AbelianCommand.Run
         };
 
     public static int Run(string[] args, IIo io)
@@ -36,7 +38,7 @@ public static class Cli
             if (args.Length == 0)
             {
                 throw new CayleyException(
-                    "missing command (show, mul, pow, conj, orbits, order, word, elements, classes or centralizer)");
+                    "missing command (show, mul, pow, conj, orbits, order, word, elements, classes, centralizer or abelian)");
             }
 
             if (args.Length == 1 && args[0] == "--help")
